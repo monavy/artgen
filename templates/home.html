@@ -1,0 +1,26 @@
+$def with (error)
+<p class="lead">To purchase a single user license, use the form below. Single user licenses are priced based on how long you need access to the service. When purchasing a single user license please use a corporate email address or an email address publicly associated with you. KnownPlainText does basic OSINT on potential customers and reserves the right to refuse to sell a subscription to anyone for any reason. If you would like to purchase multiple licenses or would like a trial license, please contact <a href="mailto:sales@knownplaintext.co">sales@knownplaintext.co</a></p>
+
+<form class="form-horizontal" action="report" method="post">
+	$if error:
+		<div class="alert alert-error">$error</div>
+	<div class="control-group">
+    	<label class="control-label" for="inputTitle">Title</label>
+    	<div class="controls">
+      		<input type="text" id="inputTitle" name="title" placeholder="Only [A-Za-z0-9 ] allowed.">
+    	</div>
+	</div>
+
+	<div class="control-group">
+    	<label class="control-label" for="inputAuthor">Author</label>
+    	<div class="controls">
+      		<input type="text" id="inputAuthor" name="author" placeholder="Only [A-Za-z0-9 ] allowed.">
+    	</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+    		<button class="btn">Generate Article</button>
+    	</div>
+	</div>
+</form>
