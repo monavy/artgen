@@ -97,9 +97,10 @@ class Article:
         if errors != []:
             return render.home(','.join(errors))
 
-        article = title.upper() + '\n\n'
-        article += 'Written By: ' + author + '\n\n'
-        article += m.generate_text(8)
+        article = '<h1>' + title.upper() + '</h1>\n'
+        article += '<h2>Written By: ' + author + '</h2>\n'
+        for i in range(10):
+            article += '<p>' + m.generate_paragraph(5, 8) + '</p>'
 
         return article
 
