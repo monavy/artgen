@@ -1,7 +1,8 @@
 $def with (error)
-<p class="lead">To purchase a single user license, use the form below. Single user licenses are priced based on how long you need access to the service. When purchasing a single user license please use a corporate email address or an email address publicly associated with you. KnownPlainText does basic OSINT on potential customers and reserves the right to refuse to sell a subscription to anyone for any reason. If you would like to purchase multiple licenses or would like a trial license, please contact <a href="mailto:sales@knownplaintext.co">sales@knownplaintext.co</a></p>
+<p class="lead">Like many of you, representatives from Pentest Magazine and Hakin9 magazine have repeatedly asked me to write articles for them. I have asked numerous times to not be contacted by anyone representing either magazine but I still get requests through LinkedIn, Twitter and email. So, I decided to fight fire with fire and give them an auto generated article every time they asked. I figured they will either publish the article like they did with <a href="http://nmap.org/misc/hakin9-nmap-ebook-ch1.pdf">DICKS</a>, or they will get so fed up that they stop requesting articles. Either way, I win.</p>
+<p class="lead">I also decided to help the rest of you win. Fill out the form below with the title and author and hit the generate button. You will be presented with an eight paragraph article on penetration testing, which is generated using Markov chains. The source text for the Markov chains is my own <a href="http://averagesecurityguy.info">blog</a>. Have fun writing articles and <a href="mailto:stephen@averagesecurityguy.info">let me know</a> if you have any questions or suggestions.</p>
 
-<form class="form-horizontal" action="report" method="post">
+<form class="form-horizontal" action="article" method="post">
 	$if error:
 		<div class="alert alert-error">$error</div>
 	<div class="control-group">
@@ -20,7 +21,7 @@ $def with (error)
 
 	<div class="control-group">
 		<div class="controls">
-    		<button class="btn">Generate Article</button>
+    		<button class="btn-primary">Generate Article</button>
     	</div>
 	</div>
 </form>

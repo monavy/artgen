@@ -1,48 +1,100 @@
+# http://charlesleifer.com/blog/building-markov-chain-irc-bot-python-and-redis/
+# http://agiliq.com/blog/2009/06/generating-pseudo-random-text-with-markov-chains-u/
+
 import random
 
 
-class Markov(object):
+class Markov():
+    def __init__(self):
+        self.data = {}
+        self.starters = []
+        self.chain_length = 2
 
-    def __init__(self, open_file):
-        self.cache = {}
-        self.open_file = open_file
-        self.words = self.file_to_words()
-        self.word_size = len(self.words)
-        self.database()
+    def __parse_words(self, words):
+        words.append(None)
 
-    def file_to_words(self):
-        self.open_file.seek(0)
-        data = self.open_file.read()
-        words = data.split()
-        return words
-
-    def triples(self):
-        """ Generates triples from the given data string. So if our string were
-                "What a lovely day", we'd generate (What, a, lovely) and then
-                (a, lovely, day).
-        """
-
-        if len(self.words) < 3:
-            return
-
-        for i in range(len(self.words) - 2):
-            yield (self.words[i], self.words[i+1], self.words[i+2])
-
-    def database(self):
-        for w1, w2, w3 in self.triples():
-            key = (w1, w2)
-            if key in self.cache:
-                self.cache[key].append(w3)
+        for i in range(len(words) - self.chain_length):
+            key = tuple(words[i:i+self.chain_length])
+            if key in self.data:
+                self.data[key].append(words[i + self.chain_length])
             else:
-                self.cache[key] = [w3]
+                self.data[key] = []
+                self.data[key].append(words[i + self.chain_length])
 
-    def generate_markov_text(self, size=25):
-        seed = random.randint(0, self.word_size-3)
-        seed_word, next_word = self.words[seed], self.words[seed+1]
-        w1, w2 = seed_word, next_word
-        gen_words = []
-        for i in xrange(size):
-            gen_words.append(w1)
-            w1, w2 = w2, random.choice(self.cache[(w1, w2)])
-        gen_words.append(w2)
-        return ' '.join(gen_words)
+    def __parse_line(self, line):
+        words = line.split()
+
+        if len(words) > self.chain_length:
+            key = tuple(words[0:self.chain_length])
+            self.starters.append(key)
+            self.__parse_words(words)
+
+    def load_from_string(self, string):
+        for line in string.split('\n'):
+            self.__parse_line(line)
+
+    def load_from_file(self, filename):
+        for line in open(filename, 'r'):
+            line = line.strip()
+            self.__parse_line(line)
+
+    def generate_text(self, pcount):
+        # Create pcount paragraphs.
+        text = ''
+        for i in xrange(pcount):
+            text += self.generate_paragraph() + '\n\n'
+
+        return text
+
+    def generate_paragraph(self):
+        scount = random.randint(3, 8)
+        text = ''
+        for i in xrange(scount):
+            text += self.generate_sentence() + ' '
+
+        return text
+
+    def generate_sentence(self):
+        key = random.choice(self.starters)
+        words = []
+
+        # Add the starter to the sentence
+        for w in key:
+            words.append(w)
+
+        # Get the next word for our sentence
+        next = random.choice(self.data[key])
+
+        # Keep adding words until next is None.
+        while next is not None:
+            words.append(next)
+            newkey = list(key[1:])
+            newkey.append(next)
+            key = tuple(newkey)
+            next = random.choice(self.data[key])
+
+        return ' '.join(words)
+
+if __name__ == '__main__':
+
+    text = '''
+        The quick brown fox jumped over the spoon.
+        The cow jumped over the moon.
+        The dish ran away with the spoon.
+    '''
+
+    m = Markov()
+    m.load_from_string(text)
+
+    print m.starters
+    print
+    print m.data
+
+    print 'Sentence:'
+    print m.generate_sentence()
+    print
+    print 'Paragraph:'
+    print m.generate_paragraph()
+    print
+    print 'Text:'
+    print m.generate_text(2)

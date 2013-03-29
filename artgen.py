@@ -41,7 +41,8 @@ def error(msg):
 
 
 def valid_text(text):
-    if re.match(r"^[A-Za-z0-9 ]$", text):
+    print repr(text)
+    if re.match(r"^[A-Za-z0-9 ]+$", text):
         return True
     else:
         return False
@@ -54,6 +55,7 @@ web.config.debug = False
 # Setup routing
 urls = (
     '/', 'Index',
+    '/article', 'Article'
 )
 
 # Configure the site template
@@ -61,7 +63,8 @@ urls = (
 render = web.template.render('templates', base='layout')
 
 # Setup Markov Generator
-m = markov.Markov('source_text.txt')
+m = markov.Markov()
+m.load_from_file('source_text.txt')
 
 
 class Index:
@@ -96,7 +99,7 @@ class Article:
 
         article = title.upper() + '\n\n'
         article += 'Written By: ' + author + '\n\n'
-        article += m.generate_markov_text(1000)
+        article += m.generate_text(8)
 
         return article
 

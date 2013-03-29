@@ -1,0 +1,74 @@
+Metasploit includes over 150 post-exploitation modules that are ready to use.
+All of them are organized by platform (windows, solaris, cisco) and then by action (gather, escalate, manage).
+Before you decide to build a new post-exploitation module look through the existing modules to see if one of them will meet your needs.
+If you have looked through the existing post-exploitation modules and have not found one that is suitable then it is time to build your own.
+This how to will explain the basic structure of post-exploitation modules, how to use the post libraries in lib/msf/core/post, how to provide feedback to the module users, and how to store your data in the loot folder.
+In addition to building post-exploitation modules this how to will explain the process for submitting your modules back into the Metasploit project.
+The easiest way to start building a post-exploitation module is to find a current module that has functionality similar to what you need and modify it.
+All post-exploitation modules can be broken down into three basic parts, initialization, registering options, and running the module.
+Post-exploitation modules you are developing should be placed in the .msf4/modules/post/ directory in your home directory.
+You will need to create the post/ directory.
+Metasploit will automatically load your modules into the framework from this directory.
+The initialize method defines the information shown when you issue the info command and is used to register any options, or advanced options, needed for the module.
+You will need to modify the Name, Description, Author, Platform, and SessionTypes variables.
+The name is a short string that describes what the module does and typically follows the pattern of '<platform> <action> <data>'.
+The SessionTypes variable should be set to either shell, meterpreter, or both.
+Whenever possible you should design your module to work with both sessions types.
+Keep in mind that Meterpreter is not stable on all platforms and that shell is not as capable as Meterpreter.
+Also keep in mind that some functionality, such as railgun, is only available in Meterpreter sessions.
+The best thing to do is test your module in both session types on the target platform.
+These are the options that are listed when you issue the show options command.
+The first argument is the name of the option.
+The second argument is an array of values, the first of which determines whether the option is required and should be set to either 'true' or 'false'.
+The second value is a short description of the option and the third value is the default value of the option, which should be 'nil' if there is no default value.
+The OptEnum options has a fourth value, which is an array of possible values.
+Multiple options should be separated by a comma.
+You can also register advanced options, which are shown when you issue the show advanced command.
+The valid option types and the arguments are the same.
+These options should be used for setting parameters that a typical user will not work with but an advanced user may want to modify.
+
+The registered options are stored in the datastore hash and can be accessed by calling datastore['OPTION_NAME'].
+You may find existing modules or online examples that register the VERBOSE option.
+This is no longer necessary because the framework registers the option for you by default.
+The default value of VERBOSE is 'false'.
+To use a post exploitation module you issue the run command with the path to the module from within a session or you can issue the use path/to/module command at the msfconsole prompt and set the SESSION option.
+In either case, Metasploit executes the module's run method.
+You can define as many other methods as is necessary but you must have a method named run.
+The Metasploit framework includes a post-exploitation library that defines a number of methods that are commonly used in post-exploitation modules.
+The library is located in the lib/msf/core/post directory.
+When possible, these methods have been designed to work in both Meterpreter and shell sessions and should be used to ensure your post-exploitation module is usable in both session types.
+To use the methods defined in the post library, you need to require the appropriate files and then include the defined modules.
+Notice in the example below that the require goes before the class definition and the include goes after the class definition.
+Some of the common methods you should be using along with a description and the module to include are listed below.
+A more complete reference of methods available in the post library can be found here.
+The Metasploit framework provides useful methods for providing feed back in your post-exploitation modules.
+Always use the print_* and vprint_* methods in your modules and never use puts.
+Modules that use puts will not be accepted into the framework.
+If your module is designed to gather data you should always store the data in the loot using the store_loot method.
+The store_loot method saves data in a unique file in your ~/.msf4/loot folder and adds indexing information to the Metasploit database, to allow you to quickly find data stored in your loot folder.
+Here is a quick rundown of the store_loot method.
+The ltype variable is a string describing the loot type and is typically one to three words separated by a period.
+If you are gathering linux passwords ltype might be set to "linux.passwords."
+The ctype variable is the file or mime type, which will often be "text/plain."
+The session variable is predefined and represents the session (Meterpreter or shell) that you are currently in.
+The data variable holds the information you want to write to the file. Next is the filename, which is a string representing the name of the file.
+This is not the file name that Metasploit will use when storing the file in the loot folder so you can make it nil if you want.
+Finally, the info variable is a string that is stored in the database and is used to describe the loot data so you can identify it later.
+The store_loot method returns the full path of the loot file that was created.
+If you plan to contribute your module back to the framework you need to read the Acceptance Guidelines, the Style Tips, and the Metasploit Development Environment guide.
+All of these documents have a lot of excellent information that I am not going to rehash here.
+Instead, I will describe the basic workflow for contributing modules to the framework.
+Note, you will need a Github account to do this.
+If you have never used Github before, start here.
+Fork the rapid7/metasploit-framework repository.
+Clone the repo to your development machine using git clone https://github.com//metasploit-framework.
+Add your module to the framework in the appropriate folder in the modules/post directory.
+Commit your module to the cloned repo with git commit -a -m "Message describing your module".
+The first line of the commit message should be 50 characters or less followed by a blank line.
+Any subsequent lines should be hard wrapped at 72 characters.
+Push your committed changes to Github with git push.
+Go back to the rapid7/metasploit-framework repo and create a pull request.
+Just like commit messages, the first line of the pull request should be 50 characters or less and any subsequent lines should be hard wrapped at 72 characters.
+Failure to comply can prevent your pull request from being accepted.
+Wait for the Metasploit developers to start working on your pull request.
+Keep an eye on the request because the developers may ask for code changes, which you will need to make before the module can be pulled into the framework.
