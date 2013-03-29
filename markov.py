@@ -46,8 +46,8 @@ class Markov():
 
         return text
 
-    def generate_paragraph(self):
-        scount = random.randint(3, 8)
+    def generate_paragraph(self, m, x):
+        scount = random.randint(m, x)
         text = ''
         for i in xrange(scount):
             text += self.generate_sentence() + ' '
