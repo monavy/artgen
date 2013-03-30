@@ -42,7 +42,7 @@ def error(msg):
 
 def valid_text(text):
     print repr(text)
-    if re.match(r"^[A-Za-z0-9 ]+$", text):
+    if re.match(r"^[A-Za-z0-9' ]+$", text):
         return True
     else:
         return False
@@ -59,8 +59,8 @@ urls = (
 )
 
 # Configure the site template
-# render = web.template.render('/var/www/crack/templates/', base='layout')
-render = web.template.render('templates', base='layout')
+render = web.template.render('/var/www/artgen/templates/', base='layout')
+# render = web.template.render('templates', base='layout')
 
 # Setup Markov Generator
 m = markov.Markov()
@@ -86,13 +86,13 @@ class Article:
             errors.append('Title can not be empty')
 
         if valid_text(title) is not True:
-            errors.append('Title can only contain [A-Za-z0-9 ]')
+            errors.append('Title can only contain [A-Za-z0-9' ]')
 
         if author == '':
             errors.append('Author can not be empty')
 
         if valid_text(author) is not True:
-            errors.append('Author can only contain [A-Za-z0-9 ]')
+            errors.append('Author can only contain [A-Za-z0-9' ]')
 
         if errors != []:
             return render.home(','.join(errors))
