@@ -72,3 +72,530 @@ Just like commit messages, the first line of the pull request should be 50 chara
 Failure to comply can prevent your pull request from being accepted.
 Wait for the Metasploit developers to start working on your pull request.
 Keep an eye on the request because the developers may ask for code changes, which you will need to make before the module can be pulled into the framework.
+As a pentester, I often gain access to a Windows domain controller and dump the hashes.
+I can use pass-the-hash to login to other Windows machines with those credentials but if I want to login to web services or databases as those users, I need to crack the passwords.
+Typically, I would break out JtR, Ophcrack, rcracki_mt, or Hashcat.
+With Ophcrack or rcracki_mt, it can take anywhere from 30 minutes to many hours to crack all of the passwords, depending on the number of hashes in the file.
+In addition, you have to store Gigs worth of data files.
+With JtR or Hashcat, you have a similar wait time and you have to maintain extensive word lists and mangling rules.
+In addition, most of the passwords you test will not meet the Windows complexity requirements, which are common in large organizations.
+KnownPlainText.co is different.
+It uses a database to store pre-computed hashes based on the most common base words and password mangling rules and all of the passwords meet the Windows complexity requirements.
+The initial database was built from public password breaches such as, rockyou, and facebook.
+As users upload new password hashes, the database will be updated with new base words and password mangling rules, becoming more efficient over time.
+The value of KnownPlainText.co comes from the time/effectiveness trade off.
+You can spend hours cracking 100% of passwords or you can crack 10-20% of the passwords immediately.
+Over the course of the year, the time and money you save will completely pay for the service.
+I was helping a friend with a Python script he was using to query the Twitter search API and I decided I wanted to write a simple Twitter client in Python.
+Twitter allows users to use two OAuth authorization methods, three-legged and single user.
+Most OAuth examples and libraries are centered around three-legged authorization, which requires an application to call a Twitter authentication page, so the user can input his or her username and password and then calls back to another URL with the necessary access tokens.
+This sounded overly complex for what I wanted, so I started looking at single user authorization.
+I am sure the standard OAuth libraries can handle single user authorization just as well as three-legged authorization but I also wanted to understand the OAuth protocol better, so I wrote my own single user OAuth module using the information here and here.
+This module integrates with the Python Requests library so accessing Twitter is as easy as:
+To use the library you will need to sign in to dev.twitter.com and create a new application and get your consumer key, consumer secret, access token, and access token secret.
+Don't share the consumer secret or the access tokens with anyone, including Github.
+You can find the Twitter single user OAuth library here.
+After telling you about the impending SSH Apocalypse and releasing the SSH super virus, I received a number of good suggestions on improving my ssh_super_virus.py script.
+I didn't want to modify ssh_super_virus.py though because I want to keep it for posterity's sake.
+Instead I rewrote ssh_super_virus.py and included the suggested changes.So, I give you ssh_pwn.py.
+This script will read the 'users' file and the SSH keys in the current directory and use them to authenticate to the list of hosts in the 'hosts' file, also in the current directory.
+If authentication is successful, the script will attempt to download additional SSH keys, the .bash_history file for the user, and SSL private keys.
+In addition, the script can be configured to automatically add new users , from /etc/passwd, and new hosts, from .ssh/known_hosts, to the list of users and hosts to test.
+Finally, you can give ssh_pwn.py your own list of post exploitation commands, which it will attempt to run and will save the output in the 'postexploit' file in the current directory.You can get ssh_pwn.py from my pentest scripts repository at github.com.
+The other day I read this article by Shaun Waterman at the Washington Times and it ticked me off a bit because of its obvious FUD (fear, uncertainty, and doubt).
+Mr.
+Waterman tells us about a flaw in SSH that will bring about data destruction of apocalyptic proportions.
+The flaw of impending doom? Key management.
+Apparently people leave SSH private keys lying around unprotected and because of this "most of the data on the servers of every company in the developed world" could get "wiped out." I can't blame Mr.
+Waterman for that gem, he is quoting Tatu Ylonen, the CEO of SSH Communications Security Corp.
+I'm not saying SSH key management is not a problem.
+As a pentester, I look for unprotected SSH keys to dig my way deeper into a client's network.
+What I am saying is Mr Waterman and Mr.
+Ylonen are blowing this thing way out of proportion for no other reason than to sell SSH key management software, which SSH Communications Security Corp just happens to sell.
+My favorite part of the article was this quote: 
+So as not to disappoint Mr.
+Waterman and Mr.
+Ylonen, I decided to create an SSH super virus.
+It's actually a Python script, which you can get here, and Mr.
+Ylonen was right, it only took me a few hours.
+To use the script, follow the instructions below:
+Ssh_super_virus.py will attempt to login to each host with each user/key combination.
+If a login is successful, ssh_super_virus.py will download all of the private keys in the users .ssh directory and test those against each user/host combination.
+You can also edit the script to add a list of evil_commands that will be run on successful login.
+So, I discovered a small problem with my Web server the other day.
+I host the fwcheck.com firewall rule analyzer on an Amazon EC2 server running the Apache web server.
+Being a security nut, I decided that this server needed to be HTTPS only so I configured my my Apache server to redirect all HTTP traffic to HTTPS like so.
+After a little bit of testing, I was satisfied the redirection was working.
+Then I was looking at the server instance in the Amazon AWS console and I noticed the Amazon public DNS* name and decided to connect to my server using that name.
+I got a directory listing, which I did not expect.
+So I went back to my Apache config and added another redirect as well as a directive to disallow directory listings.
+It was a simple fix but it made me curious as to whether other servers were improperly configured like mine.
+So, I downloaded the Alexa top 1 million web sites and started writing some Python code.
+My goal was to find domains that were hosted on Amazon EC2 and that returned different results when accessing the web server with the domain name and with the Amazon DNS name.
+First, I wrote a script that finds domains hosted on EC2.
+The script calls the host command to get a list of IP addresses associated with each domain.
+It then calls the host command again for each IP address, and parses the results to see which IP addresses were hosted at Amazon.
+The Amazon addresses are prefixed with 'ec2_'.
+Next, I wrote a script to make an HTTP connection to both the domain name and the Amazon DNS name for each IP address and checked the two responses to see if they differed.
+I then wrote the results to an HTML file for manual verification.
+The results were not as good as I had hoped.
+Of the 1 million web sites checked, I found 15,877 unique domains on 11,842 unique servers were hosted on Amazon.
+Of those 15,877 domains only 3,183 domains did not match the results from one or more of the Amazon EC2 servers on which the domain was hosted.
+Although I was disappointed in the results, I did find a few gems**, which I won't mention because I don't want to end up like this guy.
+Amazon assigns a public DNS name to all of its externally accessible instances.
+The DNS name is based on the IP address and the data center in which the instance is located.
+All identified vulnerabilities were reported to the appropriate people.
+One of the things I love about the Infosec community is building on other people's work and having them build on mine.
+My friend @tatanus from Seeds of Epiphany saw my Phishing with Webscript.io post and decided to take it to a whole new level.
+If you need to setup a phishing campaign quickly, then checkout safelogin.co.
+You need to agree to the terms of service, provide a website to phish, and a name for your phishing site; safelogin.co will do the rest.
+After you enter your data safelogin.co will provide you with two links.
+The first is for the phishing site and the second is where you can pickup your harvested credentials.
+The phishing site has a simple CSS popup box that asks for credentials and has a picture or iframe of the actual site in the background.
+Once the credentials are entered the victim is redirected to the actual site.
+And here is the data collected during the phishing campaign.
+One of the guys on the Chugalug mailing list mentioned webscript.io on Saturday night and it immediately sounded interesting.
+The basic concept is you choose a webscript.io subdomain, write a few Lua scripts and you have a web service up and running.
+The web service can run under HTTP or HTTPS.
+One of the other guys on the list was equally impressed but wondered what would you do with it.
+My first thought was phishing.
+So, I reworked a phishing setup I did a while back and made it work for webscript.io.
+I setup an account with webscript.io, you only need an email address to do this, and created two scripts.
+The first script builds a page with a iframe and a "popup" login box.
+You can modify the HTML to use any target site that allows itself to be framed or you could use a screenshot of the target as a background.
+When the username and password are submitted webscript.io stores it for you and displays it on your management page when you log in.
+One problem with using webscript.io is you can't choose your own domain name, but truthfully, phishing victims are not know for paying attention to details.
+You can also mitigate this problem by using HTTPS, because most users don't think past getting the green "secure" web site indicator.
+One big benefit is that webscript.io automatically deletes your scripts after 7 days.
+So, you could setup an account with a throw-away email address, run your campaign, and walk away.
+Webscript.io will clean it all up for you.
+Also, looking through the examples it looks like you can send emails through them as well.
+It's a one stop phishing shop.
+:)
+Update:
+The original post said that I had gained unauthenticated access to a Hudson server.
+In fact, I had gained access to a VMware Hyperic server using the default credentials of hqadmin/hqadmin.
+Hudson is probably vulnerable as well but I do not know.
+If you can confirm the problem exists in Hudson as well, let me know in the comments.
+On penetration tests it is my habit to find web servers and see what I can access using either default credentials or in some cases no credentials.
+On my last two penetration tests I gained unauthenticated access to project management servers, one was Hudson and the other Jenkins.
+Both of these project management systems include a web-based console that allows you to execute Groovy code.
+After a little research, I found that Groovy allows you to run system commands using the syntax ["command", "arg1", "arg2"].execute().
+The output of the command can be accessed using println.
+With both servers I attempted to get a reverse shell by using the following commands:
+This did not work on either server.
+I then used pentestmonkey's list of reverse shell one liners to attempt to get a reverse shell working with ruby, bash, and perl.
+Again, nothing worked.
+Since I couldn't get a shell going, I decided to look around the server to see what data was available.
+I used the following commands:
+On the Jenkins server, I was able to access the .ssh folder of the jenkins user.
+This server contained private RSA keys, which I was able to feed into the Metasploit auxiliary module auxiliary/ssh/ssh_login_pubkey and gain access to three other servers.
+If you are using a project management server such as Hudson or Jenkins ensure all unauthenticated access to the server is disabled.
+If you are a Penetration Tester, always check the web server running on the client's networks; you never know what you will find.
+You can use my low hanging fruit script to find active web servers.
+When I do internal penetration tests I often find the same easily exploitable vulnerabilities laying around the network.
+My personal favorites are MS08-067 (Yes, I still see it), Apache Tomcat default credentials, open network shares, and web management interfaces with default or no credentials.
+My typical workflow involves running a Nessus scan and then checking for these common vulnerabilities before moving on to other vulnerabilities identified by Nessus.
+I decided to write a Python script to automate this task for me.
+Lhf.py takes a single Nessus v2 XML file and prints a summary HTML file with all of the low hanging fruit found in the Nessus file.
+Currently, lhf.py checks for the following:
+lhf.py is available on Github.
+This Linkedin security breach has put me in a foul mood.
+I can't decide if these developers were lazy or stupid.
+Right now, I'm inclined to believe they are both.
+The dangers of unsalted password hashes have been known for many years.
+A quick Google search will show you this article from 2004 that explains why salting is important and even gives you code to do the salting.
+There is absolutely no excuse for any web developer anywhere in the world to store plaintext, or unsalted password hashes, period.
+The best part of this breach is LinkedIn's own blog.
+My favorite quote:
+It's not enhanced security.
+It is the most basic thing you can do to protect your customer's data.
+It costs next to nothing to add salted password hashes to a database.
+If LinkedIn can't be trusted to protect your data at such a low cost, what can they be trusted with?
+I also love this line:
+Don't get too excited about the email addresses not being published and lose sight of the fact that they were stolen in the first place.
+Here is another gem:
+Just thinking out loud here, but if someone broke into LinkedIn's database months ago and stole the passwords and LinkedIn didn't know about it until the passwords were published, do you think LinkedIn is qualified to determine if any unauthorized access has taken place? Let that sink in for a minute.
+I don't usually rant like this but I'm so tired of seeing stupid security mistakes.
+Everyone worries about advanced persistent threats (APT), which account for maybe 1 in 100 data breaches.
+The other 99 data breaches occur because people aren't doing Information Security 101.
+When people demonstrate penetration testing they always show the easy exploits like MS08-067 or the Apache Tomcat WAR upload, both of which are in Metasploit.
+While I still see these exploits available in the networks I pentest, most of the time exploitation is a lot more difficult than simply "popping a shell." One of my recent pentests shows this clearly.
+First, I scanned the network with Nessus and did not find any easily exploited vulnerabilities but I did find a medium-risk vulnerability showing unauthenticated access to multiple NFS shares (Nessus ID 42256).
+Browsing the shares I found a backup copy of the client's public web site, which was developed using Visual Studio.
+Visual Studio stores database connection strings, including plaintext passwords, in .config files.
+Using the command grep -r connectionStrings= * at the root of the source directory, I found multiple connection strings that used three different database passwords.
+The Nessus scan also identified two machines that allowed unauthenticated user enumeration using the host security identifier (SID) (Nessus ID 56211).
+Using this medium-risk vulnerability, I determined the local administrator account had been renamed.
+Next, I used Metasploit's smb_login auxiliary module, use auxiliary/scanner/smb/smb_login, along with the local administrator account and the three passwords identified in the web application source code to identify any instances of password reuse.
+Luckily, there were two machines that allowed local administrator access with one of the passwords I found.
+Next, I used Metasploit's psexec exploit module, use exploit/windows/smb/psexec, along with the local administrator username and password to attempt to get meterpreter access to the box.
+When I tried to run the exploit, I lost the network connection to the box.
+After a few minutes, the network connection was restored and I was able to try to exploit the box again.
+I determined the client's AV was flagging my attack and temporarily blocking my network connection.
+For my second exploit attempt, I created a custom executable using msfvenom, this was also caught by the client's AV.
+Since I was unable to bypass the AV with msfvenom, I resorted to using a custom Python shell that I keep for such occasions.
+I modified the script to fit my situation and used PyInstaller to compile the script to an executable.
+Then I used the EXE::Custom option with the psexec module to run my executable on the machine.
+First, I had to setup a netcat listener to catch my reverse shell, nc -l -p 4445.
+My custom executable ran successfully and I had shell access to the box, but I wanted meterpreter access.
+So, I disabled the AV on the system and ran the psexec module again with the default meterpreter payload.
+In the interest of offering solutions and not merely pointing out problems, I would love for some of the defenders that read this blog to leave comments describing the techniques used to catch and/or stop these types of attacks.
+I was working on a social engineering engagement recently and wanted to try to gather usernames and passwords from the victims.
+The Social Engineering Toolkit (SET) has a credential harvesting attack option that is designed specifically for this purpose.
+There was a small catch, the client's web site did not have a login form.
+I was able to use some custom HTML and CSS to get around this issue.
+The credential harvester attack can use either a template built into SET, a cloned site, or a custom site stored on the SET machine.
+Typically, you would clone the client's site, which would include a login form.
+Since my client didn't have a login form on their site I decided I would need to make one.
+I created an index.html file that imports the victim site in an iframe and uses CSS to create a popup login box.
+I saved the file to my pentest machine and imported it into SET when prompted.
+The custom HTML file can be downloaded here.
+To use the custom HTML file start SET, choose option option 1 for Social Engineering Attacks, then choose option 2 for Website Attack Vectors, then choose option 3 for Credential Harvester Attack Method.
+Next, choose to import a custom website by selecting option 3.
+You will be prompted to enter the path to the custom index.html file and the URL of the victim site you are impersonating.
+After that, SET will start up the web server and serve up your custom HTML file.
+The attack page should look like this.
+If the victim enters their username and password, SET will record it and generate a report for you.
+He also found this bug a while back and did an excellent write up on it.
+He also built a metasploit module to exploit the bug.
+Splunk has this nifty feature that allows you to upload custom applications that include Python scripts, which are used for custom searching.
+In Splunk Free this feature becomes a vulnerability because anyone can access the web interface without authenticating.
+This means you can upload and execute arbitrary code in the context of the Splunk user.
+If the Splunk user has admin access to the server then the server can be completely compromised.
+If you are using Splunk Free, make sure the web server is not running under an administrative account and if possible, configure a web server such as Apache or IIS to sit in front of Splunk and force users to authenticate.
+Here's an article showing how to do this with Apache.
+During a recent pentest I stumbled upon a Splunk server that allowed access to the administrative interface with no authentication.
+While trying to figure out how to run queries on the server I came across this article.
+The article says you can create a custom Python script to query data in Splunk.
+I already had a Python shell script, now I needed to figure out how to create a custom application.
+More searching turned up this article and an example application on github.
+Splunk provides users with an example application called custom_search and in the bin directory you will find a usercount.py file.
+All I had to do was replace the contents of this file with my Python shell and I had a malicious application.
+To create the custom application, use git to clone the splunk-sdk-python repository, then copy the custom_search directory to another location.
+Replace the contents of usercount.py with your Python script, make sure you inlcude the #! line.
+Next tar gzip the custom_search folder and use the management interface to upload an application from a file.
+Once the application is uploaded, you can launch it.
+Once the application is running you can execute the custom search using the following command: | usercount __EXECUTE__.
+When the search executed my shell started and I used netcat to connect to it.
+This instance of Splunk was running as root, game over.
+What I don't mention in this article is that it took me a few hours to go from identifying the Splunk server to executing code.
+I don't use Splunk and I am not familiar with how it works so I stumbled around for a long time and almost gave up number of times.
+If you are new to pentesting and are struggling, don't give up because your hard work will eventually pay off.
+The other day @jwgoerlich posted the following on twitter:
+to which I replied:
+So the question arose, "What's the hold up on IT departments and skills development?".
+I don't have experience with large IT shops, so my opinion may be way off base (feel free to correct me in the comments) but I'll give it to you anyway.
+If we want our IT departments to expand their skills we need to recognize the importance of the IT department and the importance of training.
+We also need to expect every user to have a certain level of computer knowledge and troubleshooting skills.
+I threw this together in a hurry so I hope it makes sense.
+Feel free to tell me I'm crazy in the comments.
+It's been a month since my last blog post.
+Usually I don't wait so long between posts but life has been busy with work and personal stuff.
+Staying busy doesn't give me much time to think but now that things have calmed down I want to write about something that has troubled me for a while.
+How do you pentest a small company? Well the immediate answer is you pentest them the same way as any other company, but I'm not sure.
+Before I get into the details let me define a small company.
+The typical small company I pentest has fewer than 100 internal devices, five to ten external IP addresses and maybe 30 to 40 employees.
+A typical pentest relies on finding and exploiting a few vulnerabilities in a large data set.
+When the data set is significantly reduced as with a small company the job becomes much harder.
+So my struggle is this, if I perform a pentest on small company and I am not successful at penetrating the network have I failed as a pentester or has the company succeeded in their security program? Does the answer change if the company doesn't have a security program? My fear is that someone with a better skill set would have found the vulnerability I missed and that vulnerability might allow for a complete compromise of the network.
+So the question is this, as a pentester, how do you know when you have done enough? At what point can you say, "Even though I didn't compromise the network I am satisfied with the state of the client's information security?"
+My typical small company pentest consists of the following:
+If I am still unable to break into the network after doing these things, I want to feel comfortable with the security posture of the client but I can't help but feel like I'm missing something.
+So tell me what am I missing? What else can I do to ensure my clients are getting a thorough test and to ensure I can feel comfortable with the client's security posture?
+@ITSecurity posted the following on twitter, "You ask, "when can you say, even though I didn't compromise the client I'm satisfied with the state of the security?" I think you take a logic leap in trying to make that determination.
+It's really up to your client to decide if they're satisfied with their security based on your report.
+In my mind you are there to help them make an informed decision by demonstrating a risk within the agreed upon parameters."
+I had not thought about the problem from this perspective.
+The truth is, I am restricted by the parameters placed on me by the client.
+If I am diligent to do all that I can within the parameters, focusing particularly on common attack methods, then my client can have some assurance that their security posture is sound.
+To some degree, it is up to the client to know what they want tested and to expand the parameters appropriately.
+It is also up to us as pentesters to show the client ways they can expand the parameters to get a more thorough test.
+This is a response to RyanKo's blog post "Will the ‘real’ IT security researcher please stand up?" posted at hp.com.
+The gist of the article is that there are too many security researchers who do nothing but break things and offer no methods for fixing them.
+He illustrates the problem with this quote, "If a fire breaks out, which kind of people would you prefer? The ones who incessantly scream: “Look, there is a fire!” or the ones who actually put out the fire and then gather together to design the place to be more fire safe in the future?"
+I would argue that he is describing three different people with three different skill sets.
+We need people yelling fire and getting folks out of the building (researchers and exploit writers), people to put out the fire (incident handlers), and people to find ways to prevent fires in the future (development teams).
+These are very different skills and most people will not posses two of these skills much less all three.
+Instead of disparaging the security researcher, embrace her skill set and give her a way to contribute to the solution.
+By the way, most security researchers are finding flaws related to unsanitized input (buffer overflows, XSS, SQLi, etc.).
+These flaws are a result of fundamental problems in the development process and unless you are prepared to offer every security researcher a job doing development work at your company then you are contributing to the researchers inability to create a "quantum leap to prevent similar events from happening."
+A while back my boss was looking for a way to check a machine for evidence of a compromise.
+He wanted to find files in specific locations with specific md5 checksums and wanted to find specific registry keys matching a particular value.
+I spent some time mulling this over and finally created a metasploit post module to do it.
+First, obtain a meterpreter or shell session and load the module using use post/windows/gather/enum_artifacts.
+Next, specify a configuration file containing the artifacts you want to find.
+The configuration file is written using YAML syntax and should be in the following format:
+Finally, run the enum_artifacts post module and it will search the computer in the specified session for any of the artifacts in the configuration file.
+Any matches are stored in the loot for later processing.
+A default configuration file is included with Metasploit and located at data/post/enum_artifacts_list.txt.
+Currently, the configuration file contains only a couple of test artifacts, which were used to ensure the module worked properly.
+I would like to see the community get together and add artifacts to this file, artifacts that could allow pentesters to identify malware infections, installed software, or any number of other things.
+If you have any questions or comments about this module or suggestions for improvements, please let me know.
+Penetration testing is a lot like stealing jewelry.
+There are two basic options, either plan the heist carefully, cut the alarm, pick the lock, and blackout the security cameras or kick in the front door, bust open the jewelry cases, stuff your bags, and get out before the cops show up.
+Of course the best option is to take the time to plan the heist because if it's done correctly no one gets arrested and a lot of money is made.
+Sometimes though, the smash and grab is the only option available.
+To perform a carefully planned penetration test, study the Penetration Testing Execution Standard (PTES) at pentest-standard.org.
+This is how every penetration test should be done but unfortunately, the sales guys and management haven't read the PTES and therefore don't allocate enough time or money to do a proper pentest.
+This is when the smash and grab becomes necessary.
+Use the social engineer toolkit (SET) to get meterpreter or shell access to an internal box, which is easier than it should be.
+Other options include owning a ColdFusion server or finding a Tomcat Manager server or other admin console with weak or default credentials.
+After gaining administrative access to a machine, dump the password hashes and crack them; Ophcrack or rcracki_mt are particularly good at cracking LM hashes.
+Typically, the local administrator password is shared among machines throughout the internal network.
+Another option is to migrate into a process that is running as a domain administrative user.
+There may be a service set to run under a domain admin account or the user on the box may have domain administrative privileges.
+If I get domain admin privileges this way I like to create my own domain admin account using net user username password /ADD /DOMAIN and net group "Domain Admins" username /ADD /DOMAIN.
+Make sure to remove the account when finished using net user username /DELETE /DOMAIN.
+After gaining administrative access to multiple machines, mount Windows shares on as many boxes as possible and look for sensitive data.
+Focus particularly on the data that makes the client money.
+That is the basic smash and grab method I use on a regular basis.
+Feel free to share your smash and grab strategy as well.
+I'm going to push a few buttons with this post and I may even start a flame war, but here goes.
+I don't think security auditors, security analyst, or penetration testers should define risk levels and severity ratings for a client's vulnerabilities.
+I think we should rely on systems like CVSS or CVSS2 instead of developing our own definitions.
+A typical security company will have its own four or five tier rating system along with nifty definitions to explain why a vulnerability would be rated at that level.
+That system is fine until a client inevitably tries to talk you into lowering a severity rating.
+Then you have nothing to stand on but your opinion, which may be different from the opinion of the security company next door.
+If you use a standardized severity rating instead, then you stand on the collective opinion of many knowledgeable researchers.
+I realize the CVSS and CVSS2 scoring system isn't perfect and mistakes are made when rating a vulnerability, but the system is better than having some average security guy make up his own standard.
+Back in November Chris gave a talk called "From LOW to PWND" at BSides Atlanta.
+In the talk he discussed a ColdFusion directory traversal vulnerability that allows the admin password hash to be downloaded.
+More details can be found at GNUCitizen.
+Once the password is downloaded it can be cracked, it is a SHA1 hash, or it can be used to login to the server.
+The article on GNUCitizen includes step-by-step instructions for authenticating to the server using the hash.
+On a recent job I came across a vulnerable ColdFusion server, downloaded the hash and followed the instructions for logging in with the hash.
+I was unsuccessful in my attempts to login because the server refreshed the page every 30 seconds and I couldn't go through all of the steps fast enough.
+So, I did what anyone in their right mind would do and wrote a script.
+The script uses the directory traversal flaw to download the password.properties file, extract the password, extract the "salt" on the login page, and login to the page with the salted admin hash.
+If all goes well, the authorization cookie will be set and printed to the screen.
+The cookie can be manually added to firefox using the Cookies Manager+ addon to gain administrative control of the ColdFusion server.
+From there a ColdFusion shell can be uploaded and commands can be run on the server with SYSTEM level privileges.
+The script is available on Github.
+Another interesting file to download is the neo-datasource.xml file, which contains 3DES encrypted passwords for the backend database connections.
+The passwords can be easily decrypted because the encryption key is static and is used on all ColdFusion servers.
+The passwords are buried in the file and are a pain to locate manually.
+Again, I did what anyone else would do and wrote a script.
+The cfneo.rb script will download a neo-datasource.xml file from a vulnerable server, find all the encrypted passwords, and decrypt them.
+It uses the RexTable module to print the encrypted and decrypted passwords in a nice table.
+The cfneo.rb and rextable.rb scripts can be downloaded from Github.
+The ColdFusion locale directory traversal flaw affects a number of pages and sometimes requires a different path.
+Some of the other affected pages and another possible path can be found in Chris Gates's POC python script on exploit-db.com.
+Details about decrypting the neo-datasource.xml file can be found at the HEXALE blog.
+When I was researching and writing this script I found this metasploit module, which is an auxiliary module that scans for vulnerable ColdFusion servers.
+I totally missed this metasploit module, which is an exploit module.
+I can't seem to find it in the latest version of metasploit, which must be why I missed it the first time.
+Enjoy these tools and remember only use them for good.
+In a recent pentest I ran across the web interface for a Watchguard firewall and wanted to bruteforce the password.
+I couldn't find a tool to do the brute force so I wrote one.
+I ran the script against the firewall and received valid responses to my queries but I never guessed the correct password because I didn't receive the positive response I was expecting.
+I guess I should have tested the script on a firewall to which I knew the password but I didn't have one around at the time.
+If any of you would like to test this script for me I would greatly appreciate it.
+For centuries people learned a trade by becoming an apprentice to a master craftsman.
+After spending a number of years, typically seven, working under the master they became a journeyman and were able to start their own business.
+A journeyman was able to become a master only after presenting a "master piece" to his respective guild.
+Once you became a master, then you were allowed to take on an apprentice and start the process over.
+If we look at information security as a hands on craft, what would you learn as an apprentice on your way to becoming a journeyman? What would a "master piece" look like?
+I think an apprenticeship program would look something like this:
+I know there are a lot of details missing from this outline, especially if we are thinking about this as a hands on craft, but I think it is a good place to start.
+I would like to know what you would add to this outline, particularly what hands on activities would you place under each category.
+I have a shared Google document here that you can update with your thoughts.
+I will leave the document open unless people abuse it.
+We ask a lot of questions that we don't want answered honestly and we know when not to answer certain questions honestly.
+If you think about it, how many times do you say "How are you doing?" without expecting an honest answer or waiting to get one? And there is not a man in his right mind that is going to tell a woman "yes" when she asks, "Does this dress make me look fat?" We don't really want honesty, we want people to tell us what we want to hear.
+This lack of desire for honesty holds true in the security industry as well.
+Typically, it plays out like this: a client requests a security assessment, you perform the work and create a report that is an honest assessment of their security posture, the client begs you to modify the report to keep them from looking so bad.
+A lot of times you give in because you don't want to lose the client.
+This cycle is the reason companies continue to get plundered by attackers and why we are still dealing with security issues that should have been fixed years ago.
+If you are a company seeking a security assessment, fix the problems in the report instead of arguing over the severity rating.
+If you provide security assessment services don't placate your clients by modifying the report to suit them, find new clients that want honest answers.
+"Honesty and transparency make you vulnerable.
+Be honest and transparent anyway." -- Mother Teresa
+This is the final entry of a three part series on VMware Security Basics.
+Part 1 is here and part 2 is here.
+The first part describes a typical ESX environment and the minimum considerations for the security of the storage system, the second part describes security considerations for the ESX servers, and this part describes security considerations for the guest operating systems.
+As a reminder, a typical ESX environment looks like the diagram below: 
+The thing to remember with guest operating systems is they are just like any other computer on the network and must be secured appropriately.
+Each guest OS should be hardened to match the security context in which it resides and all security updates should be applied.
+If possible create a hardened template and use the template to deploy new VMs.
+The template should be updated regularly to apply new security updates.
+In addition to security updates for the OS, apply security updates for third-party applications as well.
+In most ESX environments, VMware Tools is installed on the guest operating systems.
+Just like any other software VMware Tools must be updated regularly to apply security updates.
+Virtual machines are files and can be copied and pasted like any other file.
+Control who is allowed to move or copy VM files and where VM files can be stored.
+Backups of virtual machines should be encrypted.
+ 
+Having a redundant storage system and replication does not take the place of backups.
+Virtual machine files can be corrupted like any other files.
+Replication will give you multiple copies of a corrupted VM, it won't allow you to restore a good copy of the VM.
+Dormant VMs are machines that have been shutdown and left unused for a while.
+These machines are typically missing critical security updates and pose a risk to the network when they are brought back online.
+Virtual machines that are no longer needed should be backed up and removed from production ESX servers.
+If it is necessary to use a dormant VM, then it should be brought online in a test environment so that security updates can be applied before placing it back into production.
+I hope you found this series of blog entries useful for securing your VMware environment.
+If you want more information please read the resources listed at the beginning of part 1, which is here.
+I received an e-mail from a recent college graduate asking me for career advice.
+I thought he asked some good questions and thought it would be a good idea to share his questions.
+I will share my answers as well but I would love to here answers from some of my readers.
+As my degree is in business/information management, most of the coding that I know is self taught aside from 1 year in computer science.
+Is there really even such a thing as a security job that does not require alot of coding? I dont mind coding but there are other guys I have talked to that are head over heels for it.
+Do you think that would be a big pre-requisite for security?
+There are many facets of information security and only a few of them require a lot of coding.
+If you want to do application security or exploit development then you need to do a lot of coding but other wise you can get by using shell scripting in Windows and Linux and by picking up another scripting language like ruby or python.
+I don't do much development, I usually use other people's scripts and modify them if necessary.
+I rarely write my own tools.
+I also realise that security is not something that most people just step into right out of school.
+I also realise that people get into security from all kinds of paths and backgrounds, but what kind of jobs would you recommend I try and get to develop a solid foundation for what a security job requires?
+The best way to get into information security is to learn the general principles and start applying them in whatever work you are doing.
+A lot of people start out as system administrators and move over to security from there.
+The key is determine the kind of work you love and then figure out how to apply information security to that work.
+What is the worst thing about a pen testing/security job in your opinion?
+For me the worst thing is seeing the same flaws over and over.
+It makes you feel like nobody cares or listens to you.
+I also don't like the way companies choose cheap security assessments over thorough security assessments.
+The security industry catered to the companies wants and we ended up with a bunch of charlatans doing sorry work.
+There are folks working to change this so maybe things will get better over the next few years.
+Of the certifications that you have, which did you feel like you learned the most from? Which ones would you recommend for someone starting out?
+I have a CISSP, GSEC, GPEN, and OSCP.
+Of those four the OSCP was by far the best certification.
+I am good at taking standardized tests so the other certs were relatively easy.
+The OSCP kicked my butt the first time I took it.
+I passed it on the second try but it took a lot of work.
+If you want to be a pentester the OSCP is the test to take.
+What do you think about  as far as employment for security jobs goes? Do you think there are enough companies/consulting/whatever firms that I would be able to eventually snag a job here if I was good enough? Or do you think moving to another city would probably give me the best opportunity? I know there is alot going on as far as security jobs go in the DC/Maryland/Virginia area.
+The best advice I can give you is to find a city you love and an area of IT you love and start pursuing those two things.
+If you want to be a pentester then find a company that needs an intern and start learning what you can.
+If sysadmin type work is what you like then get a help desk job and move up from there.
+The trick is to find work you love and then figure out how security can be applied to the job.
+Looking back at what you studied in college and on your own, what did you find the most interesting? What classes did you take that you thought were fun.
+What is your passion? After you determine your passion then you determine your path.
+For more career advice visit Lenny Zeltser's blog.
+This article from Lenny Zeltser is the reason I started this blog and became more involved on LinkedIn and Twitter.
+If you have any other advice for those starting out in an information security career then put it in the comments.
+This is part 2 of a three part series on VMware Security Basics.
+Part 1 is here.
+The first part describes a typical ESX environment and the minimum considerations for the security of the storage system.
+This part describes the minimum security considerations for the ESX servers.
+As a reminder, a typical ESX environment looks like the diagram below: 
+Four things to think about with the ESX servers are hardware redundancy, the server configuration, security update management, and the security levels of the guest operating systems.
+Build each ESX server with redundant power supplies, processors, network cards, and host bus adapters (HBA).
+It is not enough to have a network card or HBA with two ports, two separate network cards and HBAs are necessary.
+In addition to redundant power supplies, consider using multiple UPS systems to provide battery backup to each server.
+The point is to ensure a single hardware failure does not take down the entire ESX server.
+For a production environment run a minimum of two ESX servers to provide adequate fail over protection.
+If only two servers are running then each server should be capable of handling the maximum load.
+The better option is to run the number of ESX servers needed plus one additional server.
+This configuration allows for server maintenance without affecting the overall performance of the ESX environment.
+Harden each ESX server before placing it into production.
+The vSphere Hardening Guide gives a number of recommendations for hardening the ESX server configuration.
+The recommendations are based on three trust levels: enterprise, DMZ, and specialized security limited functionality.
+The enterprise recommendations are appropriate for most production environments and provide the minimum protections required by all major security and compliance standards, the DMZ recommendations are for environments that are particularly susceptible to targeted attacks, and the specialized security limited functionality recommendations are for specialized environments that are vulnerable to sophisticated attacks.
+Just like any other operating system the ESX server requires security updates, which should be installed on a regular basis.
+The simplest way to manage security updates is to use the built-in update manager in vCenter, which can scan each ESX server to produce a list of missing updates and then install the missing updates.
+Each ESX server should be dedicated to hosting guest operating systems (OS) of the same security level.
+A guest OS connected to the production network will likely be configured and maintained more securely than a guest OS connected to a test network.
+These two guests should not run on the same ESX server because a compromise on the less secure test machine could lead to a compromise on the more secure production machine.
+As stated earlier, this is the second part of a three part series.
+I plan to conclude this series next week with security considerations for the guest operating systems.
+Until then, remember to build each ESX server with hardware redundancy and each ESX environment with server redundancy, maintain a secure configuration on the ESX server, install security updates on the ESX server, and keep guest operating systems of differing security levels on separate ESX servers.
+Virtualization is complex and there are many moving parts.
+I can not speak to all the details of hardening a VMware environment but I can speak to the minimum things to consider when installing or maintaining a VMware environment.
+For more advice, look at these documents:
+A typical ESX environment will have one or more ESX servers connected to a shared storage system such as a fiber channel or iSCSI SAN.
+Each ESX server will have one or more guest operating systems, each with VMware tools and a myriad of applications installed.
+This can be seen in the figure below:
+In this environment there are three major areas of concern: the storage system, the ESX servers, and the guest operating systems.
+Four things to think about with storage systems are data availability, traffic isolation, the security levels of the ESX servers sharing the storage systems, and which ESX servers are allowed to see which data sets.
+Whatever storage system is used, fiber channel or iSCSI, ensure there are multiple data paths between the storage system and the ESX servers.
+This includes dual controllers on the SAN, dual switches, redundant power sources for the SAN, and dual host bus adapters (HBA) on the ESX server.
+It is not enough to have a single HBA with dual ports, two HBAs are necessary.
+Before the system goes into production, testing should be done to ensure a single device failure does not prevent the ESX server from accessing the data.
+Traffic isolation is of particular concern in iSCSI systems because they use the same basic infrastructure as a standard network.
+All iSCSI traffic should be segmented from the rest of the network traffic to prevent an attacker from sniffing the iSCSI data.
+I am not a fan of using VLANs to segment traffic of differing security levels and always recommend physically segmenting iSCSI traffic from the rest of the network.
+ESX servers in differing security levels are configured and maintained differently.
+An ESX server setup as a lab environment is not going to be hardened to the same level as an ESX server holding the companies production systems and those two ESX servers should not share the same storage.
+An attacker who gained access to the weaker ESX server could use it to attempt to gain access to the production data on the shared storage system.
+On a typical SAN, multiple data volumes are configured and each one is assigned a SCSI logical unit number (LUN), which is used to uniquely identify that volume.
+The SAN can then be configured to only allow specific HBAs to access specific LUNs.
+As an example, in a group of ESX servers only two of those servers may need access to the LUN that holds the HR data, the SAN should be configured so only the HBAs in those ESX servers have access to the LUN with HR data.
+As stated earlier there are three major areas of concern with a production VMware environment, the storage system, the ESX servers, and the guest operating systems.
+I will discuss the latter two in upcoming blog entries.
+For now, remember to configure and test multiple paths to the data on the storage system, to isolate iSCSI traffic from the rest of the network, to keep ESX servers of differing security levels from sharing the same storage system, and to only share data sets with the appropriate ESX servers.
+On a recent pentest, one of the goals was to gain domain admin access to the network.
+If you can compromise a domain controller you can use the commands net user username password /ADD /DOMAIN and net group "Domain Admins" username /ADD /DOMAIN.
+I found the domain controllers but was unable to identify a suitable vulnerability that would allow me to access them.
+However, I found another box on the domain that was vulnerable to MS08-067 (yes, there are still boxes that have not been patched for this vulnerability).
+Using metasploit I was able to get a meterpreter shell on this box.
+I then used the ps command to find out what processes were running.
+I found a few processes running under the administrator account for the domain.
+Next, I migrated to one of the processes and used the upload command in meterpreter to upload psexec to the box.
+Meterpreter uploads files to the default path for the user.
+Next, I used the shell command to drop into a shell and ran the commands  psexec \\nameofdc net user username password /ADD /DOMAIN and psexec \\nameofdc net group "Domain Admins" username /ADD /DOMAIN.
+I now had my own user account with domain admin credentials.
+This is in response to a blog post Impending Doom and IT Security's Downward Spiral.
+I think he's on the right track but I have to take exception to one statement.
+I think we need to train our IT Security people twice.
+ First train them to be a business analyst and understand the corporate mindset, strategy and delivery model and only then can we train them to be good security people.
+ Learning technology is easy ...applying it to the business is hard.
+The problem is your are removing the responsibility for risk mitigation from the business owner and placing it on the IT security professional.
+IT security is just another business risk, the same as theft, fraud, physical disasters, poor marketing decisions and poor customer service.
+It is the responsibility of the business owner to protect the assets of the business and to ensure the business keeps running.
+While a competent IT security professional who understands the business is extremely valuable in helping the business owner understand the business risk associated with IT security and in developing a risk mitigation strategy, it is still the business owners responsibility to secure their data.
+Until the business owners become educated on the IT security risks to their business and start developing strategies to mitigate those risks IT security professionals don't have a snowball's chance in hades of lifting us out of the spiral.
+When I do a penetration test I typically find some little hole someone forgot to patch, which I then use to get the local admin password.
+Most companies use the same local admin password on every machine, so my next step is to use the psexec module in Metasploit along with the admin credentials to get meterpreter sessions on as many machines as possible.
+The trouble is the exe that is copied to the victim machine by the psexec module is typically caught by the AV on the machine.
+Fortunately, Metasploit has built in tools to help you with AV evasion.
+Metasploit creates executable files by encoding a payload and then inserting the payload into a template executable file.
+The templates are in the data/templates folder.
+Metasploit includes templates for Windows, Mac, and Linux, templates for x86, x86_64, and ARM, and a template for Windows services.
+If you look in the data/templates/src folder you will find the source files for each of the templates.
+Each source file declares a variable to hold the payload and assigns it the value of "PAYLOAD:".
+The payload variable is 4096 bytes in some cases and 8192 bytes in others.
+Metasploit uses lib/msf/util/exe.rb to insert your payload by replacing the value "PAYLOAD:" with your encoded payload.
+You can use a custom template as long as it defines a variable of the right size and assigns it the value of "PAYLOAD:".
+For the service template you can also define a variable and assign it the value "SERVICENAME".
+Looking at the service.c template you can see the variable definitions:
+If executables built with the default template are getting caught by your AV then you will need to modify the source file, compile it, and then use the new executable as your template.
+If you are using msfencode it looks like this:
+If you are using the psexec module then you can set the advanced options EXE::Template and EXE::Path.
+There is no tried and true technique for bypassing antivirus.
+You may find your AV product can be bypassed with simple modifications to the templates or you may find that it doesn't matter how you modify the template because the AV is picking up on the payload.
+This is when your encoding becomes important.
+Here are a couple of things to keep in mind.
+I have rewritten this article and put it on the Metasploit documentation wiki you can find it here.
+ 
+ Understanding Windows passwords is complex, fortunately, cracking them isn’t.
+Many people have done an excellent job of researching and writing about cracking Windows passwords and I am not one of them.
+Instead of trying to explain their work I will link you to it in the reference section below.
+The purpose of this document is to show you step-by-step how to obtain and crack local Windows passwords by exploiting physical access to the machine.
+In most places it is illegal to obtain another person’s password without their permission, don’t do anything illegal.
+First, we use the Live CD to boot the Windows workstation.
+After we boot we need to mount the Windows partition, which will usually be /dev/sda1.
+If it is not /dev/sda1 you can use dmesg to find the Windows hard drive.
+The command below should help you find the partition.
+Some computers boot to the hard drive by default so you need to access the BIOS boot menu to boot from the CD.
+On Lenovo computers you hit the blue ThinkVantage button at the BIOS splash screen and then hit F12 when the menu is displayed.
+On Dell computers you hit F12 at the BIOS splash screen.
+Once the Live CD is booted you can mount the Windows partition.
+After the Windows partition is mounted we need to copy the SAM, SECURITY, and system files onto a USB drive.
+These files are located in the WINDOWS\system32\config folder.
+Your USB drive will be considered a second hard drive and will typically be located at /dev/sdb.
+If it is not the you can use dmesg again to find the USB drive.
+At this point, we no longer need the Windows workstation so you can shut it down or restart it.
+The shutdown command will restart the computer if you use the -r option and halt the computer if you use the -h command.
+Next, we load the SAM, SECURITY, and system files onto our machine where creddump is installed.
+Creddump includes three python scripts pwdump.py, cachedump.py and lsadump.py.
+We will use the pwdump.py script to create a file with our Windows hashes in pwdump format.
+The file will include the username, id, LM Hash (if available), and NTLM hash.
+We can then feed the pwdump.py file into a number of password cracking utilities including, rcracki, hashcat, and john the ripper.
+Finally, we feed our hashfile into our favorite password cracking software.
+I use rcracki_mt provided by freerainbowtables.com.
+Rcracki_mt uses indexed rainbowtables also provided by freerainbowtables.com to crack passwords.
+The rainbow tables for LM hashes are excellent and should crack 99% of all LM hashes.
+When running rcracki_mt you will need to specify the hash file, the number of threads you want to run, and where the rainbow tables are stored.
+You can also specify an output file for the cracked passwords.
+I hope you found this tutorial helpful.
+Please feel free to leave comments and suggestions below.
