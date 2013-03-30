@@ -26,7 +26,6 @@ Multiple options should be separated by a comma.
 You can also register advanced options, which are shown when you issue the show advanced command.
 The valid option types and the arguments are the same.
 These options should be used for setting parameters that a typical user will not work with but an advanced user may want to modify.
-
 The registered options are stored in the datastore hash and can be accessed by calling datastore['OPTION_NAME'].
 You may find existing modules or online examples that register the VERBOSE option.
 This is no longer necessary because the framework registers the option for you by default.
@@ -100,7 +99,7 @@ I didn't want to modify ssh_super_virus.py though because I want to keep it for 
 Instead I rewrote ssh_super_virus.py and included the suggested changes.So, I give you ssh_pwn.py.
 This script will read the 'users' file and the SSH keys in the current directory and use them to authenticate to the list of hosts in the 'hosts' file, also in the current directory.
 If authentication is successful, the script will attempt to download additional SSH keys, the .bash_history file for the user, and SSL private keys.
-In addition, the script can be configured to automatically add new users , from /etc/passwd, and new hosts, from .ssh/known_hosts, to the list of users and hosts to test.
+In addition, the script can be configured to automatically add new users from /etc/passwd, and new hosts, from .ssh/known_hosts, to the list of users and hosts to test.
 Finally, you can give ssh_pwn.py your own list of post exploitation commands, which it will attempt to run and will save the output in the 'postexploit' file in the current directory.You can get ssh_pwn.py from my pentest scripts repository at github.com.
 The other day I read this article by Shaun Waterman at the Washington Times and it ticked me off a bit because of its obvious FUD (fear, uncertainty, and doubt).
 Mr.
@@ -146,7 +145,7 @@ Amazon assigns a public DNS name to all of its externally accessible instances.
 The DNS name is based on the IP address and the data center in which the instance is located.
 All identified vulnerabilities were reported to the appropriate people.
 One of the things I love about the Infosec community is building on other people's work and having them build on mine.
-My friend @tatanus from Seeds of Epiphany saw my Phishing with Webscript.io post and decided to take it to a whole new level.
+My friend Adam from Seeds of Epiphany saw my Phishing with Webscript.io post and decided to take it to a whole new level.
 If you need to setup a phishing campaign quickly, then checkout safelogin.co.
 You need to agree to the terms of service, provide a website to phish, and a name for your phishing site; safelogin.co will do the rest.
 After you enter your data safelogin.co will provide you with two links.
@@ -311,9 +310,9 @@ The truth is, I am restricted by the parameters placed on me by the client.
 If I am diligent to do all that I can within the parameters, focusing particularly on common attack methods, then my client can have some assurance that their security posture is sound.
 To some degree, it is up to the client to know what they want tested and to expand the parameters appropriately.
 It is also up to us as pentesters to show the client ways they can expand the parameters to get a more thorough test.
-This is a response to RyanKo's blog post "Will the ‘real’ IT security researcher please stand up?" posted at hp.com.
+This is a response to RyanKo's blog post "Will the 'real' IT security researcher please stand up?" posted at hp.com.
 The gist of the article is that there are too many security researchers who do nothing but break things and offer no methods for fixing them.
-He illustrates the problem with this quote, "If a fire breaks out, which kind of people would you prefer? The ones who incessantly scream: “Look, there is a fire!” or the ones who actually put out the fire and then gather together to design the place to be more fire safe in the future?"
+He illustrates the problem with this quote, "If a fire breaks out, which kind of people would you prefer? The ones who incessantly scream: "Look, there is a fire!" or the ones who actually put out the fire and then gather together to design the place to be more fire safe in the future?"
 I would argue that he is describing three different people with three different skill sets.
 We need people yelling fire and getting folks out of the building (researchers and exploit writers), people to put out the fire (incident handlers), and people to find ways to prevent fires in the future (development teams).
 These are very different skills and most people will not posses two of these skills much less all three.
@@ -567,11 +566,11 @@ This is when your encoding becomes important.
 Here are a couple of things to keep in mind.
 I have rewritten this article and put it on the Metasploit documentation wiki you can find it here.
  
- Understanding Windows passwords is complex, fortunately, cracking them isn’t.
+ Understanding Windows passwords is complex, fortunately, cracking them isn't.
 Many people have done an excellent job of researching and writing about cracking Windows passwords and I am not one of them.
 Instead of trying to explain their work I will link you to it in the reference section below.
 The purpose of this document is to show you step-by-step how to obtain and crack local Windows passwords by exploiting physical access to the machine.
-In most places it is illegal to obtain another person’s password without their permission, don’t do anything illegal.
+In most places it is illegal to obtain another person's password without their permission, don't do anything illegal.
 First, we use the Live CD to boot the Windows workstation.
 After we boot we need to mount the Windows partition, which will usually be /dev/sda1.
 If it is not /dev/sda1 you can use dmesg to find the Windows hard drive.
