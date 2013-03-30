@@ -281,7 +281,7 @@ This instance of Splunk was running as root, game over.
 What I don't mention in this article is that it took me a few hours to go from identifying the Splunk server to executing code.
 I don't use Splunk and I am not familiar with how it works so I stumbled around for a long time and almost gave up number of times.
 If you are new to pentesting and are struggling, don't give up because your hard work will eventually pay off.
-The other day @jwgoerlich posted the following on twitter:
+The other day a friend posted the following on twitter:
 to which I replied:
 So the question arose, "What's the hold up on IT departments and skills development?".
 I don't have experience with large IT shops, so my opinion may be way off base (feel free to correct me in the comments) but I'll give it to you anyway.
@@ -302,7 +302,7 @@ So the question is this, as a pentester, how do you know when you have done enou
 My typical small company pentest consists of the following:
 If I am still unable to break into the network after doing these things, I want to feel comfortable with the security posture of the client but I can't help but feel like I'm missing something.
 So tell me what am I missing? What else can I do to ensure my clients are getting a thorough test and to ensure I can feel comfortable with the client's security posture?
-@ITSecurity posted the following on twitter, "You ask, "when can you say, even though I didn't compromise the client I'm satisfied with the state of the security?" I think you take a logic leap in trying to make that determination.
+A friend posted the following on twitter, "You ask, "when can you say, even though I didn't compromise the client I'm satisfied with the state of the security?" I think you take a logic leap in trying to make that determination.
 It's really up to your client to decide if they're satisfied with their security based on your report.
 In my mind you are there to help them make an informed decision by demonstrating a risk within the agreed upon parameters."
 I had not thought about the problem from this perspective.
@@ -379,7 +379,7 @@ The cfneo.rb script will download a neo-datasource.xml file from a vulnerable se
 It uses the RexTable module to print the encrypted and decrypted passwords in a nice table.
 The cfneo.rb and rextable.rb scripts can be downloaded from Github.
 The ColdFusion locale directory traversal flaw affects a number of pages and sometimes requires a different path.
-Some of the other affected pages and another possible path can be found in Chris Gates's POC python script on exploit-db.com.
+Some of the other affected pages and another possible path can be found in Chris's POC python script on exploit-db.com.
 Details about decrypting the neo-datasource.xml file can be found at the HEXALE blog.
 When I was researching and writing this script I found this metasploit module, which is an auxiliary module that scans for vulnerable ColdFusion servers.
 I totally missed this metasploit module, which is an exploit module.
