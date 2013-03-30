@@ -31,8 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import web
-import re
-import urllib
+import cgi
 
 import markov
 
@@ -53,13 +52,13 @@ urls = (
 )
 
 # Configure the site template
-# render = web.template.render('/var/www/artgen/templates/', base='layout')
-render = web.template.render('templates', base='layout')
+render = web.template.render('/var/www/artgen/templates/', base='layout')
+# render = web.template.render('templates', base='layout')
 
 # Setup Markov Generator
 m = markov.Markov()
-# m.load_from_file('/home/ubuntu/artgen/source_text.txt')
-m.load_from_file('source_text.txt')
+m.load_from_file('/home/ubuntu/artgen/source_text.txt')
+# m.load_from_file('source_text.txt')
 
 
 class Index:
@@ -86,10 +85,11 @@ class Article:
         if errors != []:
             return render.home(','.join(errors))
 
-        article = '<h1>' + urllib.urlencode(title.upper()) + '</h1>\n'
-        article += '<h2>Written By: ' + urllib.urlencode(author) + '</h2>\n'
+        article = '<h1>' + cgi.escape(title.upper(), True) + '</h1>\n'
+        article += '<h2>Written By: ' + cgi.escape(author, True) + '</h2>\n'
         for i in range(10):
-            article += '<p>' + urllib.urlencode(m.generate_paragraph(5, 8)) + '</p>'
+            article += '<p>'
+            article += cgi.escape(m.generate_paragraph(5, 8), True) + '</p>'
 
         return article
 
@@ -97,7 +97,7 @@ class Article:
 app = web.application(urls, locals())
 app.notfound = notfound
 
-#application = app.wsgifunc()
+application = app.wsgifunc()
 
 if __name__ == "__main__":
     app.run()
