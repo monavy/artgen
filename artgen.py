@@ -32,6 +32,7 @@
 
 import web
 import re
+import urllib
 
 import markov
 
@@ -40,16 +41,9 @@ def error(msg):
     return '{{"error":"{0}"}}'.format(msg)
 
 
-def valid_text(text):
-    print repr(text)
-    if re.match(r"^[A-Za-z0-9' ]+$", text):
-        return True
-    else:
-        return False
-
-
 def notfound():
     return web.notfound(render.notfound())
+
 
 web.config.debug = False
 # Setup routing
@@ -59,11 +53,12 @@ urls = (
 )
 
 # Configure the site template
-render = web.template.render('/var/www/artgen/templates/', base='layout')
-# render = web.template.render('templates', base='layout')
+# render = web.template.render('/var/www/artgen/templates/', base='layout')
+render = web.template.render('templates', base='layout')
 
 # Setup Markov Generator
 m = markov.Markov()
+# m.load_from_file('/home/ubuntu/artgen/source_text.txt')
 m.load_from_file('source_text.txt')
 
 
@@ -85,22 +80,16 @@ class Article:
         if title == '':
             errors.append('Title can not be empty')
 
-        if valid_text(title) is not True:
-            errors.append('Title can only contain [A-Za-z0-9' ]')
-
         if author == '':
             errors.append('Author can not be empty')
-
-        if valid_text(author) is not True:
-            errors.append('Author can only contain [A-Za-z0-9' ]')
 
         if errors != []:
             return render.home(','.join(errors))
 
-        article = '<h1>' + title.upper() + '</h1>\n'
-        article += '<h2>Written By: ' + author + '</h2>\n'
+        article = '<h1>' + urllib.urlencode(title.upper()) + '</h1>\n'
+        article += '<h2>Written By: ' + urllib.urlencode(author) + '</h2>\n'
         for i in range(10):
-            article += '<p>' + m.generate_paragraph(5, 8) + '</p>'
+            article += '<p>' + urllib.urlencode(m.generate_paragraph(5, 8)) + '</p>'
 
         return article
 
