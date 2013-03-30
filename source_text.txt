@@ -94,7 +94,7 @@ This module integrates with the Python Requests library so accessing Twitter is 
 To use the library you will need to sign in to dev.twitter.com and create a new application and get your consumer key, consumer secret, access token, and access token secret.
 Don't share the consumer secret or the access tokens with anyone, including Github.
 You can find the Twitter single user OAuth library here.
-After telling you about the impending SSH Apocalypse and releasing the SSH super virus, I received a number of good suggestions on improving my ssh_super_virus.py script.
+After telling you about the impending SSH Apocalypse and releasing the SSH super virus, I received a number of good suggestions on improving my ssh_super_virus.py script.
 I didn't want to modify ssh_super_virus.py though because I want to keep it for posterity's sake.
 Instead I rewrote ssh_super_virus.py and included the suggested changes.So, I give you ssh_pwn.py.
 This script will read the 'users' file and the SSH keys in the current directory and use them to authenticate to the list of hosts in the 'hosts' file, also in the current directory.
